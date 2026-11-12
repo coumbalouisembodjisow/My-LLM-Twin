@@ -1,6 +1,8 @@
 import pymupdf
+from langchain_community.document_loaders import PyMuPDFLoader
+import pprint
 
-def pdf_extractor(file):
+def pdf_extractor_from_scratch(file):
     try:
         doc=pymupdf.open(file)
         result={}
@@ -13,8 +15,12 @@ def pdf_extractor(file):
         print("Fichier introuvable")
         return None
 
+def pdf_extractor(file_path):
+    loader=PyMuPDFLoader(file_path,mode="single")
+    docs=loader.load()
+    print(len(docs))
+    pprint.pp(docs[0].metadata)
+    for i in range(len(docs)):
+        print(docs[i].page_content)
+    return docs
 
-if __name__=="__main__":
-    file=r"C:\Users\lenovo\My-LLM-Twin\data\raw\courses\Machine_Learning\Regress.pdf"
-    extraction=pdf_extractor(file)
-    print(extraction)
