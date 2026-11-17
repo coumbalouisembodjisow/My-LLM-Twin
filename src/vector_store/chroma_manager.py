@@ -1,7 +1,9 @@
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 import hashlib
-def initialize_vector_store():
+
+
+def initialize_vector_store(  collection_name="all_courses", distance_metric="l2"):
     model_name= "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     model_kwargs = {"device": "cpu"}
     encode_kwargs = {"normalize_embeddings": False}
@@ -11,15 +13,20 @@ def initialize_vector_store():
         encode_kwargs=encode_kwargs,
     )
     vector_store = Chroma(
-    collection_name="all_courses",
+    collection_name= collection_name,
     embedding_function=hf,
+    collection_configuration={
+    "hnsw": {
+        "space": distance_metric
+    }
+                            },
     persist_directory="./vector_store/chroma_db"
     )
     return vector_store
 
 
 def generate_chunk_id(chunk):
-    to_hash=chunk.page_content + " " + chunk.metadata["source"]
+    to_hash=chunk.page_content + " " + chunk.metadata["source"] + " " + str(chunk.metadata["page"])
     return hashlib.sha256(to_hash.encode("utf-8")).hexdigest()
     
     

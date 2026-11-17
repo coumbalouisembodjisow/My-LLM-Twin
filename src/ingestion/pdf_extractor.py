@@ -16,7 +16,7 @@ def pdf_extractor_from_scratch(file):
         return None
 
 def pdf_extractor(file_path):
-    loader=PyMuPDFLoader(file_path,mode="single")
+    loader=PyMuPDFLoader(file_path,mode="page")
     docs=loader.load()
     print(len(docs))
     pprint.pp(docs[0].metadata)
